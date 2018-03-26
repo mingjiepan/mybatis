@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+
+    <!--mybatis通过properties标签，引入外部properties文件的内容，
+        resources：引入的是类路径的资源
+        url：引入网络或者磁盘路径的资源
+    -->
+    <properties resource="jdbc.properties"></properties>
+
+
+    <!--settings标签，包含很多设置项
+        setting设置每一个设置项的值
+        name：名称，value：值
+    -->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+
+    <!--typeAliases：别名处理器，为 Java 类型设置一个短的名字。它只和 XML 配置有关，存在的意义仅在于用来减少类完全限定名的冗余
+    别名不区分大小写-->
+    <!--mybatis系统自带提供一些别名，比如原生数据类型的别名为在类型名称前面加下划线，比如int的别名为 _int
+    引用类型的别名为类名小写，比如：Integer的别名为integer-->
+    <typeAliases>
+        <!--type：Java的全限类名，默认值是类名小写，比如sysuser；可通过alias取其他的别名
+        这种情况比较麻烦，需要一个一个设置-->
+        <typeAlias type="com.mybatis.base.domain.Sysuser" alias="user"/>
+
+        <!--package可以批量设置别名，该包下的所有类的类名为其别名，但这种方式也有问题，当这个包的子包有一个类与这个包下的类的名称一样时，
+        会冲突，可以通过在类的上方用注解@Alias("user")来解决冲突-->
+        <package name="com.mybatis.base.domain"/>
+    </typeAliases>
+
+
+
+    <!--mybatis可以通过environments配置多种环境，default指定使用哪个环境-->
+    <environments default="development">
+
+        <!--environment配置一个具体的环境信息，必须包含transactionManager和dataSource-->
+        <environment id="development">
+            <!--JDBC是别名，通过Configuration可查看-->
+            <transactionManager type="JDBC"/>
+
+            <!--datasource数据源类型：
+            POOLED：连接池
+            UNPOOLED：非连接池的
+            JNDI的方式-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+
+        <environment id="production">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="mapper/base/SysuserMapper.xml"/>
+    </mappers>
+</configuration>
