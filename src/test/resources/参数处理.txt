@@ -1,0 +1,34 @@
+单个参数：mybatis不会做特殊处理
+    #{参数名}：取出参数值，这边的参数名无需与接口的参数名一致
+
+
+多个参数：mybatis会做特殊处理
+    多个参数会被封装成一个map
+    key：从param1.....paramN，或者参数的索引
+    value：传入的参数值
+    #{}就是从map中获取指定的key值
+
+    比如：如下操作会有异常
+    Sysuser selectByAgeAndName(Integer age, String name)
+    select * from sysuser where age = #{age} and name=#{name}
+
+    Caused by: org.apache.ibatis.binding.BindingException: Parameter 'id' not found. Available parameters are [arg1, arg0, param1, param2]
+
+    正确的写法
+    select * from sysuser where age = #{param1} and name=#{param2}
+
+
+命名参数，明确指定mybatis在封装多个参数成一个map时，map的key名称。使用注解@Param。
+比如  Sysuser selectByAgeAndName(@Param("age") Integer age, String name)
+取参：age=#{age}，name=#{param2}
+
+若是传入的多个参数中有对象时，也是一样的道理。
+若传入的参数中有集合类型Collection(List、Set）或者数组时，则有所不同。mybatis会在将参数封装成map时，将集合参数名当作map的key
+
+
+POJO
+如果参数很多，可以直接传入pojo ，#{属性名}，就可取出pojo的属性值
+
+
+Map
+或者直接传入map。#{key}取出map的key对应的值

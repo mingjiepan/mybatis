@@ -11,7 +11,6 @@
     -->
     <properties resource="jdbc.properties"></properties>
 
-
     <!--settings标签，包含很多设置项
         setting设置每一个设置项的值
         name：名称，value：值
@@ -19,7 +18,6 @@
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
-
 
     <!--typeAliases：别名处理器，为 Java 类型设置一个短的名字。它只和 XML 配置有关，存在的意义仅在于用来减少类完全限定名的冗余
     别名不区分大小写-->
@@ -34,7 +32,6 @@
         会冲突，可以通过在类的上方用注解@Alias("user")来解决冲突-->
         <package name="com.mybatis.base.domain"/>
     </typeAliases>
-
 
 
     <!--mybatis可以通过environments配置多种环境，default指定使用哪个环境-->
@@ -68,6 +65,30 @@
         </environment>
     </environments>
 
+    <!--databaseIdProvider支持多数据库厂商
+    作用就是得到数据库仓库的标识，mybatis就能根据数据库厂商的标识来执行不同的sql
+    MYSQL Oracle SQL Server
+    与mybatis的配置文件配合使用-->
+    <databaseIdProvider type="DB_VENDOR">
+        <!--为不同数据库厂商起别名-->
+        <property name="MySQL" value="mysql"/>
+        <property name="Oracle" value="oracle"/>
+        <property name="SQL Server" value="sqlServer"/>
+    </databaseIdProvider>
+
+    <!--mapper将sql映射注册到全局配置中
+    单个注册
+        配置文件方式：
+        1. resource表示的是引用类路径下的配置文件，
+        2. url表示引用的是网络环境或者是磁盘路径下的配置文件
+        接口方式：
+        1. class引用的是接口的全类名，但是使用此方式的前提是配置文件名需要和接口同名，且需要与接口放在同一目录下
+        2. 将sql全部写在接口上，使用注解的方式
+        推荐方式：
+        重要的接口使用xml方式
+        不太重要的使用注解的方式
+    批量注册
+    name：表示包的路径-->
     <mappers>
         <mapper resource="mapper/base/SysuserMapper.xml"/>
     </mappers>

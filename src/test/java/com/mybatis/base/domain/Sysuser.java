@@ -4,15 +4,24 @@ package com.mybatis.base.domain;
  * @author panmingjie
  */
 public class Sysuser {
-    private String id;
+    private int id;
     private String username;
     private String usercode;
+    private String password;
 
-    public String getId() {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

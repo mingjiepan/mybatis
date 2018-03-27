@@ -6,7 +6,51 @@
 <!--namespace指定为接口的全类名，方法名改为sql标签的ID名-->
 
 <mapper namespace="com.mybatis.base.mapper.SysuserMappper">
-    <select id="selectUserById" resultType="com.mybatis.base.base.domain.Sysuser">
+
+
+    <!--数据库厂商-->
+    <select id="selectUserById" resultType="com.mybatis.base.domain.Sysuser" databaseId="mysql">
         select * from sysuser where id = #{id}
     </select>
+
+    <select id="selectUserById" resultType="com.mybatis.base.domain.Sysuser" databaseId="oracle">
+        select id,usercode,username,password from sysuser where id = #{id}
+    </select>
+
+
+    <!--parameterType可以省略
+    mybatis支持自增主键，自增主键的获取，mybatis也是利用jdbc的statement.getGenerateKeys()
+    useGeneratedKeys=true,使用自增主键策略
+    keyProperty,指对应的自增属性主键，也就是mybatis获取到主键值后，赋值给JavaBean对象的属性
+    -->
+    <insert id="insertUser" parameterType="com.mybatis.base.domain.Sysuser"
+            useGeneratedKeys="true" keyProperty="id" databaseId="mysql">
+        INSERT INTO sysuser(usercode, username,password) VALUES (#{usercode},#{username},#{password})
+    </insert>
+
+
+   <!-- oracle不支持自增，Oracle使用序列来模拟自增，每次插入的记录的主键是从序列获取到的，那么如何获取到这个值-->
+    <insert id="insertUser" parameterType="com.mybatis.base.domain.Sysuser" databaseId="oracle">
+        /*keyProperty,查出的主键值封装给javabean的哪个对象*/
+        /*order=before，表示查询主键的sql在插入的sql之前执行*/
+        /*resultType,表示主键的类型*/
+      <selectKey keyProperty="id" order="BEFORE" resultType="int">
+          /*编写查询主键的sql*/
+          select sysuser_id.nextval from dual
+      </selectKey>
+        INSERT INTO sysuser(id,usercode, username,password) VALUES (#{id},#{usercode},#{username},#{password})
+    </insert>
+
+    <!--参数处理-->
+    <select id="findUserByIdAndUsername" resultType="user">
+        SELECT * FROM sysuser where id=#{id} and username=#{username}
+    </select>
+
+
+
+    <select id="findUserByUsercodeAndUsername" resultType="user">
+        SELECT * FROM sysuser where usercode=#{usercode} and username=#{username}
+    </select>
+
+
 </mapper>
