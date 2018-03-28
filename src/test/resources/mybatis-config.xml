@@ -17,6 +17,7 @@
     -->
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="jdbcTypeForNull" value="NULL"/>
     </settings>
 
     <!--typeAliases：别名处理器，为 Java 类型设置一个短的名字。它只和 XML 配置有关，存在的意义仅在于用来减少类完全限定名的冗余
@@ -91,5 +92,6 @@
     name：表示包的路径-->
     <mappers>
         <mapper resource="mapper/base/SysuserMapper.xml"/>
+        <mapper resource="mapper/base/Syspermission.xml"/>
     </mappers>
 </configuration>

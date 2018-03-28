@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.base.mapper.SyspermissionMapper">
+
+    <resultMap id="BaseResultMap" type="com.mybatis.base.domain.Syspermission">
+        <!--当用ID标签时，底层会有优化-->
+        <id column="id" javaType="id"/>
+        <!--其他列，用result，并不是必须要写出所有的列和属性对应（mybatis也会自动映射），但推荐全部写出-->
+        <result column="name" javaType="name"/>
+    </resultMap>
+
+    <!--若返回的是集合类型，则resultType为集合里面的元素类型-->
+    <select id="list" resultType="com.mybatis.base.domain.Syspermission" >
+        select * from syspermission where type=#{type, jdbcType=NULL}
+    </select>
+
+    <select id="map" resultType="map" >
+        select * from syspermission where id=#{id, jdbcType=NULL}
+    </select>
+
+    <select id="listMap" resultType="map" >
+        select * from syspermission where type=#{type, jdbcType=NULL}
+    </select>
+
+    <select id="mapObj" resultType="com.mybatis.base.domain.Syspermission" >
+        select * from syspermission
+    </select>
+</mapper>

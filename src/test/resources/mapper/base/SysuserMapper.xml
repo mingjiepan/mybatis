@@ -49,7 +49,7 @@
 
 
     <select id="findUserByUsercodeAndUsername" resultType="user">
-        SELECT * FROM sysuser where usercode=#{usercode} and username=#{username}
+        SELECT * FROM sysuser where usercode=#{usercode, jdbcType=NULL} and username=#{username}
     </select>
 
 
