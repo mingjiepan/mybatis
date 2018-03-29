@@ -18,6 +18,10 @@
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="jdbcTypeForNull" value="NULL"/>
+
+        <!--懒加载需开启的2个配置-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <!--typeAliases：别名处理器，为 Java 类型设置一个短的名字。它只和 XML 配置有关，存在的意义仅在于用来减少类完全限定名的冗余
@@ -91,7 +95,9 @@
     批量注册
     name：表示包的路径-->
     <mappers>
-        <mapper resource="mapper/base/SysuserMapper.xml"/>
-        <mapper resource="mapper/base/Syspermission.xml"/>
+       <!-- <mapper resource="mapper/base/SysuserMapper.xml"/>
+        <mapper resource="mapper/base/Syspermission.xml"/>-->
+        <mapper resource="mapper/relation/EmployeeMapper.xml"/>
+        <mapper resource="mapper/relation/DepartmentMapper.xml"/>
     </mappers>
 </configuration>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.base.mapper.EmployeeMapper">
+
+    <!--联合查询，级联属性封装-->
+    <resultMap id="empMap" type="com.mybatis.base.domain.Employee">
+        <id column="id" property="id" javaType="java.lang.Integer"/>
+        <result column="name" property="name" />
+        <result column="address" property="address"/>
+        <result column="did" property="department.id" javaType="java.lang.Integer"/>
+        <result column="depart_name" property="department.departName"/>
+        <result column="detail" property="department.detail"/>
+    </resultMap>
+
+    <!--使用association来定义单个对象的封装规则-->
+    <resultMap id="empMap2" type="com.mybatis.base.domain.Employee">
+        <id column="id" property="id" javaType="java.lang.Integer"/>
+        <result column="name" property="name" />
+        <result column="address" property="address"/>
+        <association property="department" javaType="com.mybatis.base.domain.Department">
+            <id column="did" property="id"/>
+            <result column="depart_name" property="departName"/>
+            <result column="detail" property="detail"/>
+        </association>
+    </resultMap>
+
+    <!--使用association来进行分步查询，使用分步查询可以使用延迟加载-->
+    <resultMap id="empStep" type="com.mybatis.base.domain.Employee">
+        <id column="id" property="id" javaType="java.lang.Integer"/>
+        <result column="name" property="name" />
+        <result column="address" property="address"/>
+        <association property="department" select="com.mybatis.base.mapper.DepartmentMapper.selectById" column="depart_id">
+        </association>
+    </resultMap>
+
+    <select id="selectEmployee" resultMap="empMap2">
+        select e.id id,e.name name,e.depart_id depart_id, e.address address,
+        d.id did, d.depart_name depart_name, d.detail detail
+        from employee e, department d where e.id = d.id and e.id=#{id}
+    </select>
+
+    <select id="selectById" resultMap="empStep">
+        select * from employee where id=#{id}
+    </select>
+    
+    <select id="selectByPrimary" resultType="com.mybatis.base.domain.Employee">
+        select * from employee where id=#{id}
+    </select>
+    
+</mapper>
