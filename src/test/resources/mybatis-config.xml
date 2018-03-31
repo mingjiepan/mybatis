@@ -99,5 +99,6 @@
         <mapper resource="mapper/base/Syspermission.xml"/>-->
         <mapper resource="mapper/relation/EmployeeMapper.xml"/>
         <mapper resource="mapper/relation/DepartmentMapper.xml"/>
+        <mapper resource="mapper/relation/DynamicSqlMapper.xml"/>
     </mappers>
 </configuration>

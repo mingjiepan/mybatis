@@ -16,7 +16,7 @@ import java.io.InputStream;
 /**
  * @author panmingjie
  */
-public class EmployeeTest {
+public class RelationTest {
     SqlSessionFactory sqlSessionFactory = null;
 
     @Before

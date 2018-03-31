@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--if
+    choose (when, otherwise) 类似 switch-case
+    trim (where, set)
+    foreach
+    set 用于更新，类似于where标签，用于去掉字符串最后一个逗号。可以用trim来替换（也可以实现相同的功能）
+    -->
+
+<mapper namespace="com.mybatis.base.mapper.DynamicSqlMapper">
+
+    <!--where无法解决在字符串后面加and或者or的情况，只能去除sql第一个and或者or-->
+    <sql id="wheresql">
+        <where>
+            <if test="id != null">
+                id=#{id}
+            </if>
+            <if test="name != null and name.trim() != ''">
+                and name like #{name}
+            </if>
+            <if test="address != null and address != ''">
+                and address like #{address}
+            </if>
+        </where>
+    </sql>
+
+    <!--trim可以解决where无法处理的最后一个and或者or的情况
+    prefix：前缀，trim标签体中的字符串是拼接后的结果
+        prefix给拼接后的字符串加一个前缀
+    prefixOverrides:前缀覆盖，去掉整个字符串前面多余的字符
+    suffix:给拼接后的字符串加一个后缀
+    suffixOverrides:后缀覆盖，去掉整个字符串后多余的字符-->
+    <sql id="trimsql">
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id != null">
+                id=#{id} and
+            </if>
+            <if test="name != null and name.trim() != ''">
+                name like #{name} and
+            </if>
+            <if test="address != null and address != ''">
+                address like #{address} and
+            </if>
+        </trim>
+    </sql>
+    
+    <sql id="choosesql">
+        <where>
+            <choose>
+                <when test="id != null">
+                    id=#{id}
+                </when>
+                <when test="name != null and name != ''">
+                    name=#{name}
+                </when>
+                <otherwise>
+                    depart_id=1
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+
+
+    <!--查询携带了哪个字段，sql就拼接上这个字段,/*test表达式：OGNL表达式*/-->
+    <select id="listEmployee" resultType="com.mybatis.base.domain.Employee">
+        select * from employee
+        <include refid="wheresql"/>
+    </select>
+
+    <select id="listEmployeeTrim" resultType="com.mybatis.base.domain.Employee">
+        select * from employee
+        <include refid="trimsql"/>
+    </select>
+
+    <select id="listEmployeeChoose" resultType="com.mybatis.base.domain.Employee">
+        select * from employee
+        <include refid="choosesql"/>
+    </select>
+
+
+    <update id="updateEmployeeBySet">
+        update employee
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address}
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+    <update id="updateEmployeeByTrim">
+        update employee
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address}
+            </if>
+            where id = #{id}
+        </trim>
+    </update>
+
+
+    <!--collection:表示要遍历的集合，若参数类型是list的话，则会特殊处理封装在map中，map的key都为list
+    item:表示将遍历出来的元素赋值给指定变量
+    separator:每个元素之间的分割符
+    open:遍历出所有结果封装一个开始的字符
+    close:遍历出所有结果封装一个结束的字符
+    index:索引，遍历list的时候，index是索引，而item是值
+        遍历map的时候，index表示的是map的key，而item表示的是map的值-->
+    <select id="selectByCollection" resultType="com.mybatis.base.domain.Employee">
+        select * from employee where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")" index="key">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <!--批量保存方式1 public int addEmployeeList(List<Employee> employees);-->
+    <insert id="addEmployeeList" databaseId="mysql">
+        insert into employee values
+        <foreach collection="employees" item="employee" separator=",">
+            (#{employee.id}, #{employee.name}, #{employee.address}, #{employee.depart_id})
+        </foreach>
+    </insert>
+
+    <!--批量保存方式2， 这种方式需要数据库连接数据allowMultiQueries设置为true，批量更新和删除也可用此方式-->
+    <insert id="addEmployeeList2" databaseId="mysql">
+        <foreach collection="employees" item="employee" separator=";">
+            insert into employee values(#{employee.id}, #{employee.name}, #{employee.address}, #{employee.depart_id})
+        </foreach>
+    </insert>
+
+   <!-- oracle 不支持values(),(),()
+   oracle支持的方式：
+        1.多个insert语句放在begin和end之间
+               begin
+                    insert into employees(id, name, depart_id, address) values(1, "zhangsan", "2", "quanzhou");
+                    insert into employees(id, name, depart_id, address) values(2, "lisi", "3", "xiamen");
+               end
+        2.利用中间表
+                insert into employees(id, name, depart_id, address)
+                    select empid.nextval, name, address from(
+                        select 'zhangsan','quanzhou' from dual union
+                        select 'lisi', 'xiamen' from dual union
+                        select 'wangwu', 'fuzhou' from dual
+                    )-->
+    <insert id="addEmployeeList" databaseId="oracle">
+        begin
+        <foreach collection="employees" item="employee" separator=";">
+            insert into employee(id,name,address,depart_id) values(#{employee.id}, #{employee.name}, #{employee.address}, #{employee.depart_id})
+        </foreach>
+        end
+    </insert>
+
+    <insert id="addEmployeeList2" databaseId="oracle">
+            insert into employee(id,name,address,depart_id)
+              select empid.nextval, name, address, depart_id from
+        <foreach collection="employees" item="employee" separator="union" open="(" close=")">
+            select #{employee.name},#{employee.adress},#{employee.depart_id} from dual
+        </foreach>
+    </insert>
+
+
+    <!--两个内置参数
+        _parameter:代表整个参数
+            单个参数，_parameter就是这个参数
+            多个参数，参数会被封装为一个map,_parameter就代表这个map
+        _databseId:
+            如果配置了databaseIdProvider，那么_databseId代表当前数据库的别名-->
+    <select id="selectInnerParamer">
+        <if test="_databseId == 'mysql'">
+            select * from employee
+            <where>
+                <if test="_parameter != null and _parameter != ''">
+                    name = #{_parameter.name}  /*这边也可以替换为 name=#{employee.name}*/
+                </if>
+            </where>
+        </if>
+        <if test="_databseId == 'oracle'">
+            select id,name from employee
+        </if>
+    </select>
+
+
+    <!--bind可以将一个OGNL表达式的值绑定到一个变量上-->
+    <select id="selectFuzzy">
+       select * from employee where name like '%${name}%' /*这种方法不安全，sql注入问题*/
+    </select>
+    <select id="selectFuzzybind">
+      <bind name="_name" value="'%' + name + '%'"/>
+       select * from employee where name like #{_name}
+    </select>
+
+
+    <!--sql标签与include标签一般会搭配使用
+    include标签内还可以自定义一些属性，在sql标签内就能使用自定义的属性-->
+    <sql id="includesql">
+      name = ${testName}
+    </sql>
+    <select id="selectInclude">
+        select * from employee where
+        <include refid="includesql">
+            <property name="testName" value="name"/>
+        </include>
+    </select>
+
+</mapper>
