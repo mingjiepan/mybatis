@@ -19,6 +19,9 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="jdbcTypeForNull" value="NULL"/>
 
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+        <setting name="cacheEnabled" value="true"/>
+
         <!--懒加载需开启的2个配置-->
         <setting name="lazyLoadingEnabled" value="true"/>
         <setting name="aggressiveLazyLoading" value="false"/>
@@ -97,6 +100,8 @@
     <mappers>
        <!-- <mapper resource="mapper/base/SysuserMapper.xml"/>
         <mapper resource="mapper/base/Syspermission.xml"/>-->
+        <mapper resource="mapper/base/SysuserMapper.xml"/>
+        <mapper resource="mapper/base/Syspermission.xml"/>
         <mapper resource="mapper/relation/EmployeeMapper.xml"/>
         <mapper resource="mapper/relation/DepartmentMapper.xml"/>
         <mapper resource="mapper/relation/DynamicSqlMapper.xml"/>

@@ -7,6 +7,8 @@
 
 <mapper namespace="com.mybatis.base.mapper.SysuserMappper">
 
+    <cache eviction="LRU" flushInterval="200000" readOnly="false" type="com.mybatis.base.cache.RedisCache"></cache>
+
 
     <!--数据库厂商-->
     <select id="selectUserById" resultType="com.mybatis.base.domain.Sysuser" databaseId="mysql">

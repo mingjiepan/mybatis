@@ -4,13 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mybatis.base.mapper.SyspermissionMapper">
+    <cache type="com.mybatis.base.cache.RedisCache"/>
 
-    <resultMap id="BaseResultMap" type="com.mybatis.base.domain.Syspermission">
-        <!--当用ID标签时，底层会有优化-->
+    <!--<resultMap id="BaseResultMap" type="com.mybatis.base.domain.Syspermission">
+        &lt;!&ndash;当用ID标签时，底层会有优化&ndash;&gt;
         <id column="id" javaType="id"/>
-        <!--其他列，用result，并不是必须要写出所有的列和属性对应（mybatis也会自动映射），但推荐全部写出-->
+        &lt;!&ndash;其他列，用result，并不是必须要写出所有的列和属性对应（mybatis也会自动映射），但推荐全部写出&ndash;&gt;
         <result column="name" javaType="name"/>
-    </resultMap>
+    </resultMap>-->
 
     <!--若返回的是集合类型，则resultType为集合里面的元素类型-->
     <select id="list" resultType="com.mybatis.base.domain.Syspermission" >

@@ -1,9 +1,11 @@
 package com.mybatis.base.domain;
 
+import java.io.Serializable;
+
 /**
  * @author panmingjie
  */
-public class Sysuser {
+public class Sysuser implements Serializable {
     private int id;
     private String username;
     private String usercode;

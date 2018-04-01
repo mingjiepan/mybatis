@@ -1,9 +1,11 @@
 package com.mybatis.base.domain;
 
+import java.io.Serializable;
+
 /**
  * @author panmingjie
  */
-public class Syspermission {
+public class Syspermission implements Serializable {
 
     private int id;
     private String name;
