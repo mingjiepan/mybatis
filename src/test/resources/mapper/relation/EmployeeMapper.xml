@@ -49,5 +49,5 @@
     <select id="selectByPrimary" resultType="com.mybatis.base.domain.Employee">
         select * from employee where id=#{id}
     </select>
-    
+
 </mapper>

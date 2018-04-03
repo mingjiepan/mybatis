@@ -5,11 +5,15 @@
 <configuration>
 
 
+
+
     <!--mybatis通过properties标签，引入外部properties文件的内容，
         resources：引入的是类路径的资源
         url：引入网络或者磁盘路径的资源
     -->
     <properties resource="jdbc.properties"></properties>
+
+
 
     <!--settings标签，包含很多设置项
         setting设置每一个设置项的值
@@ -40,7 +44,6 @@
         会冲突，可以通过在类的上方用注解@Alias("user")来解决冲突-->
         <package name="com.mybatis.base.domain"/>
     </typeAliases>
-
 
     <!--mybatis可以通过environments配置多种环境，default指定使用哪个环境-->
     <environments default="development">
@@ -100,10 +103,11 @@
     <mappers>
        <!-- <mapper resource="mapper/base/SysuserMapper.xml"/>
         <mapper resource="mapper/base/Syspermission.xml"/>-->
-        <mapper resource="mapper/base/SysuserMapper.xml"/>
+        <!--<mapper resource="mapper/base/SysuserMapper.xml"/>
         <mapper resource="mapper/base/Syspermission.xml"/>
         <mapper resource="mapper/relation/EmployeeMapper.xml"/>
         <mapper resource="mapper/relation/DepartmentMapper.xml"/>
-        <mapper resource="mapper/relation/DynamicSqlMapper.xml"/>
+        <mapper resource="mapper/relation/DynamicSqlMapper.xml"/>-->
+        <mapper resource="mapper/relation/patternMapper.xml"/>
     </mappers>
 </configuration>

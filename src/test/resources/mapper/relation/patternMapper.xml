@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.base.mapper.PatternMapper">
+
+    <resultMap id="baseMap" type="com.mybatis.base.domain.Pattern">
+        <id column="id" property="id"/>
+        <result column="indexs" property="indexs" typeHandler="com.mybatis.base.interceptor.PatternTypeHandler"/>
+        <result column="address" property="address"/>
+    </resultMap>
+
+    <select id="selectByPrimary" resultMap="baseMap">
+        select * from pattern where id = #{id}
+    </select>
+
+    <insert id="insertByHandler" useGeneratedKeys="true" keyProperty="id">
+        insert into pattern(id, indexs, address) values (#{id}, #{indexs, typeHandler=com.mybatis.base.interceptor.PatternTypeHandler}, #{address})
+    </insert>
+
+    <insert id="insertByNoHandler" useGeneratedKeys="true" keyProperty="id">
+        insert into pattern(id, indexs, address) values (#{id}, #{indexs}, #{address})
+    </insert>
+</mapper>
